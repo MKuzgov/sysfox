@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>SysFox Отчёт</title>
+  <style>
+    body { font-family: sans-serif; padding: 2em; }
+    h1 { color: #336699; }
+    table { width: 100%; border-collapse: collapse; margin-top: 1em; }
+    th, td { border: 1px solid #ccc; padding: 0.5em; text-align: left; }
+  </style>
+</head>
+<body>
+  <h1>Отчёт SysFox</h1>
+  <table>
+    <tr><th>Метрика</th><th>Значение</th></tr>
+    {% for key, value in stats.items() %}
+    <tr><td>{{ key }}</td><td>{{ value }}</td></tr>
+    {% endfor %}
+  </table>
+</body>
+</html>
+

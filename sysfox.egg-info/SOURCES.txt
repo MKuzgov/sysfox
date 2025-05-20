@@ -1,0 +1,12 @@
+README.md
+main.py
+setup.py
+cli/__init__.py
+cli/monitor.py
+sysfox.egg-info/PKG-INFO
+sysfox.egg-info/SOURCES.txt
+sysfox.egg-info/dependency_links.txt
+sysfox.egg-info/entry_points.txt
+sysfox.egg-info/requires.txt
+sysfox.egg-info/top_level.txt
+utils/__init__.py
