@@ -1,37 +1,101 @@
-# modules/network/scan.py
+from core.logger import logger
 import subprocess
-import json
+import platform
+import time
+
+import sys
 import os
-from datetime import datetime
+import subprocess
+from rich.console import Console
+from core.logger import logger
+
+console = Console()
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "../../..")))
 
 
-def net_scan(target):
-    timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-    report_dir = "reports/network"
-    os.makedirs(report_dir, exist_ok=True)
-    report_path = f"{report_dir}/scan_{timestamp}.json"
+def scan_ports(target: str):
+    console.rule("[bold green]Port Scanner")
+    try:
+        result = subprocess.check_output(["nmap", "-T4", "-F", target], text=True)
+        console.print(f"[cyan]{result}[/cyan]")
+        logger.info(f"Port scan completed for target: {target}")
+    except Exception as e:
+        console.print(f"[red]Ошибка:[/red] {e}")
+        logger.error(f"Port scan failed for target {target}: {e}")
+
+
+def show_interfaces():
+    console.rule("[bold green]Интерфейсы")
+    try:
+        result = subprocess.check_output(["ip", "a"], text=True)
+        console.print(f"[white]{result}[/white]")
+        logger.info("Network interfaces displayed successfully")
+    except Exception as e:
+        console.print(f"[red]Ошибка интерфейсов:[/red] {e}")
+        logger.error(f"Failed to show interfaces: {e}")
+
+
+def show_routes():
+    console.rule("[bold green]Маршруты")
+    try:
+        result = subprocess.check_output(["ip", "route"], text=True)
+        console.print(f"[white]{result}[/white]")
+        logger.info("Routing table displayed successfully")
+    except Exception as e:
+        console.print(f"[red]Ошибка маршрутов:[/red] {e}")
+        logger.error(f"Failed to show routes: {e}")
+
+
+def show_connections():
+    console.rule("[bold green]Подключения")
+    try:
+        result = subprocess.check_output(["ss", "-tunap"], text=True)
+        console.print(f"[white]{result}[/white]")
+        logger.info("Active connections displayed successfully")
+    except Exception as e:
+        console.print(f"[red]Ошибка соединений:[/red] {e}")
+        logger.error(f"Failed to show active connections: {e}")
+
+
+def ping_host(host: str):
+    console.rule(f"[bold green]Ping {host}")
+    try:
+        result = subprocess.check_output(["ping", "-c", "4", host], text=True)
+        console.print(f"[cyan]{result}[/cyan]")
+        logger.info(f"Ping to {host} successful")
+    except Exception as e:
+        console.print(f"[red]Ошибка ping:[/red] {e}")
+        logger.error(f"Ping to {host} failed: {e}")
+
+
+def net_scan(target="127.0.0.1"):
+    """
+    Выполняет базовое сканирование сети с логированием и выводом.
+    Использует ping для проверки доступности.
+    """
+
+    logger.info(f"🔍 Начало сканирования IP-адреса: {target}")
+    print(f"🔍 Сканирование {target}...\n")
 
     try:
-        result = subprocess.run(
-            ["nmap", "-sn", target], capture_output=True, text=True, check=True
-        )
-        lines = result.stdout.splitlines()
-        hosts = []
+        start_time = time.time()
 
-        current_host = {}
-        for line in lines:
-            if line.startswith("Nmap scan report for"):
-                current_host = {"ip": line.split()[-1]}
-            elif "MAC Address" in line:
-                current_host["mac"] = line.split(" ")[2]
-                hosts.append(current_host)
+        if platform.system().lower() == "linux":
+            command = ["ping", "-c", "4", target]
+        else:
+            command = ["ping", target]
 
-        with open(report_path, "w") as f:
-            json.dump(hosts, f, indent=4)
+        result = subprocess.run(command, capture_output=True, text=True)
 
-        print(f"[+] Scan complete. {len(hosts)} host(s) found.")
-        for host in hosts:
-            print(f"IP: {host['ip']} | MAC: {host.get('mac', 'N/A')}")
+        if result.returncode == 0:
+            logger.info(f"✅ Хост {target} доступен")
+            print(result.stdout)
+        else:
+            logger.warning(f"⚠️ Хост {target} не отвечает")
+            print(result.stderr)
 
-    except subprocess.CalledProcessError as e:
-        print("[!] Scan failed:", e)
+        duration = time.time() - start_time
+        logger.info(f"⏱️ Время выполнения: {duration:.2f} секунд")
+
+    except Exception as e:
+        logger.error(f"❌ Ошибка сканирования: {str(e)}")

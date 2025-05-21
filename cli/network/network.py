@@ -1,8 +1,25 @@
+import click
+from modules.network.scan import net_scan
+from modules.network.ping import ping_host
+from modules.network.interface import show_interfaces
+from modules.network.traceroute import trace_route
+from modules.network.dns_lookup import dns_lookup
+from modules.network.whois_lookup import whois_lookup
+from modules.network.mac_lookup import mac_lookup
+from modules.network.live_hosts import scan_live_hosts
+
 from modules.network.traceroute import traceroute
 from modules.network.dns_lookup import dns_lookup
 from modules.network.whois_lookup import whois_lookup
 from modules.network.mac_lookup import mac_lookup
 from modules.network.live_hosts import live_hosts
+
+from modules.network.ping import ping_host
+from modules.network.interface import list_interfaces
+
+
+
+from modules.network.report import generate_report
 
 import click
 import subprocess
@@ -10,60 +27,79 @@ import json
 from rich import print
 from rich.table import Table
 from rich.console import Console
-from modules.network.scan import net_scan
 
-console = Console()
 
 
 @click.group()
 def network():
-    """🕸️ Сетевой модуль: сканирование, маршруты, соединения"""
+    """🧠 Сетевые инструменты SysFox"""
     pass
 
 
 @network.command()
-@click.option("--target", prompt="Введите IP/хост", help="Цель для сканирования")
+@click.option("--target", "-t", prompt="Введите IP/хост", help="Целевой IP или хост")
 def scan(target):
-    """Сканирование сети"""
-    console.rule("[bold green]Сканирование сети")
+    """🔍 Сканирование хоста"""
     net_scan(target)
 
 
 @network.command()
-@click.argument("host")
-def trace(host):
-    """Маршрут до хоста"""
-    console.rule(f"[bold green]Traceroute до {host}")
-    print(traceroute(host))
+def interface():
+    """🖧 Показать сетевые интерфейсы"""
+    show_interfaces()
+
+
+@network.command()
+@click.option("--target", "-t", prompt="Введите IP/хост", help="Целевой хост")
+def ping(target):
+    """📡 Проверка доступности хоста"""
+    ping_host(target)
+
+
+@network.command()
+@click.option("--target", "-t", prompt="Введите IP/хост", help="Целевой хост")
+def traceroute(target):
+    """📍 Маршрут до хоста"""
+    trace_route(target)
 
 
 @network.command()
 @click.argument("domain")
 def dns(domain):
-    """DNS-записи домена"""
-    console.rule(f"[bold green]DNS-записи для {domain}")
-    print(dns_lookup(domain))
+    """🌐 DNS-запрос"""
+    dns_lookup(domain)
 
 
 @network.command()
 @click.argument("domain")
 def whois(domain):
-    """Информация о домене"""
-    console.rule(f"[bold green]WHOIS {domain}")
-    print(whois_lookup(domain))
+    """🔍 WHOIS-информация о домене"""
+    whois_lookup(domain)
 
 
 @network.command()
 @click.argument("mac")
 def mac(mac):
-    """Производитель устройства по MAC"""
-    console.rule(f"[bold green]Производитель MAC {mac}")
-    print(mac_lookup(mac))
+    """🔧 Производитель MAC-адреса"""
+    mac_lookup(mac)
 
 
 @network.command()
 @click.argument("subnet")
-def sweep(subnet):
-    """Поиск активных хостов"""
-    console.rule(f"[bold green]Сканирование хостов в {subnet}")
-    print(live_hosts(subnet))
+def live(subnet):
+    """🌐 Поиск активных хостов в подсети"""
+    scan_live_hosts(subnet)
+
+
+@network.command()
+@click.option('--target', prompt='Введите IP/домен для ping', help='Целевой хост')
+@click.option('--count', default=4, help='Количество запросов (по умолчанию 4)')
+def ping(target, count):
+    """Ping до целевого хоста"""
+    ping_host(target, count)
+
+@network.command()
+def interface():
+    """Показать информацию о сетевых интерфейсах"""
+    show_interfaces()
+
