@@ -1,3 +1,5 @@
-click
-psutil
+requests
 rich
+psutil
+whois
+python-whois

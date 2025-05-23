@@ -1,7 +1,12 @@
 Metadata-Version: 2.4
 Name: sysfox
-Version: 0.1
-Requires-Dist: click
-Requires-Dist: psutil
+Version: 0.1.0
+Summary: SysFox: Powerful CLI toolkit
+Author: Your Name
+Author-email: Your Name <you@example.com>
+Requires-Dist: requests
 Requires-Dist: rich
-Dynamic: requires-dist
+Requires-Dist: psutil
+Requires-Dist: whois
+Requires-Dist: python-whois
+Dynamic: author

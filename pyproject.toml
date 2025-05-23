@@ -1,0 +1,21 @@
+[project]
+name = "sysfox"
+version = "0.1.0"
+description = "SysFox: Powerful CLI toolkit"
+authors = [
+  { name="Your Name", email="you@example.com" }
+]
+dependencies = [
+  "requests",
+  "rich",
+  "psutil",
+  "whois",
+  "python-whois"
+]
+
+[project.scripts]
+sysfox = "sysfox.main:main"
+
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
