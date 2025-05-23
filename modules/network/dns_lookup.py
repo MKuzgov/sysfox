@@ -1,11 +1,12 @@
-import subprocess
-
+import socket
+from rich import print
+from modules.network.utils import print_header, print_logo
 
 def dns_lookup(domain):
+    print_logo()
+    print_header("DNS Lookup")
     try:
-        result = subprocess.check_output(
-            ["dig", domain, "+noall", "+answer"], text=True
-        )
-        return result
-    except Exception as e:
-        return f"[red]Ошибка DNS:[/red] {e}"
+        ip = socket.gethostbyname(domain)
+        print(f"[bold cyan]{domain}[/bold cyan] resolved to [bold green]{ip}[/bold green]")
+    except socket.gaierror:
+        print(f"[bold red]Unable to resolve domain: {domain}[/bold red]")

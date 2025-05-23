@@ -1,9 +1,12 @@
-import subprocess
-
+import whois
+from rich import print
+from modules.network.utils import print_header, print_logo
 
 def whois_lookup(domain):
+    print_logo()
+    print_header("Whois Lookup")
     try:
-        result = subprocess.check_output(["whois", domain], text=True)
-        return result
+        result = whois.whois(domain)
+        print(result)
     except Exception as e:
-        return f"[red]Ошибка WHOIS:[/red] {e}"
+        print(f"[bold red]Error:[/bold red] {str(e)}")

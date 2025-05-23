@@ -1,15 +1,12 @@
 import subprocess
-from core.logger import logger
+from rich import print
+from modules.network.utils import print_header, print_logo
 
-def ping_host(target: str):
+def ping_host(target, count):
+    print_logo()
+    print_header("Ping")
     try:
-        logger.info(f"📡 Pinging host: {target}")
-        result = subprocess.run(['ping', '-c', '4', target], capture_output=True, text=True)
-        if result.returncode == 0:
-            logger.success(f"✅ Host {target} is reachable.")
-            print(result.stdout)
-        else:
-            logger.warning(f"⚠ Host {target} is unreachable.")
-            print(result.stderr)
+        result = subprocess.run(["ping", "-c", str(count), target], capture_output=True, text=True)
+        print(result.stdout)
     except Exception as e:
-        logger.error(f"❌ Ping error: {str(e)}")
+        print(f"[bold red]Error:[/bold red] {str(e)}")
