@@ -6,8 +6,9 @@ from sysfox.core import error_handler
 from sysfox.core.logger import setup_logger
 from sysfox.modules.network import (
     dns_lookup, geolocation, interface, ipinfo, live_hosts,
-    mac_lookup, ping, scan, traceroute, whois_lookup
+    mac_lookup, ping, scan, traceroute, whois_lookup, report
 )
+from sysfox.modules.advanced import fingerprint_hider
 
 logger = setup_logger()
 
@@ -46,30 +47,55 @@ def main():
     parser_whois = subparsers.add_parser("whois")
     parser_whois.add_argument("domain")
 
-    args = parser.parse_args()
+    parser_mask = subparsers.add_parser("x-mask")
+    parser_mask.add_argument("--profile", help="Маска для подмены fingerprint (например: win11)")
+    parser_mask.add_argument("--revert", action="store_true", help="Сброс маскировки")
 
+    parser_report = subparsers.add_parser("report")
+
+    args = parser.parse_args()
     logger.info(f"Команда получена: {args.command}")
+
     try:
         if args.command == "dns":
+            report.log_command(f"dns {args.domain}")
             dns_lookup.dns_lookup(args.domain)
         elif args.command == "geo":
+            report.log_command(f"geo {args.ip}")
             geolocation.get_ip_info(args.ip)
         elif args.command == "ifaces":
+            report.log_command("ifaces")
             interface.show_interfaces()
         elif args.command == "ipinfo":
+            report.log_command(f"ipinfo {args.domain}")
             ipinfo.get_ip_info(args.domain)
         elif args.command == "live":
+            report.log_command(f"live {args.subnet}")
             live_hosts.find_live_hosts(args.subnet)
         elif args.command == "mac":
+            report.log_command(f"mac {args.mac}")
             mac_lookup.mac_lookup(args.mac)
         elif args.command == "ping":
+            report.log_command(f"ping {args.target} -c {args.count}")
             ping.ping_host(args.target, args.count)
         elif args.command == "scan":
+            report.log_command(f"scan {args.host} {args.ports}")
             scan.port_scan(args.host, args.ports)
         elif args.command == "trace":
+            report.log_command(f"trace {args.target}")
             traceroute.traceroute(args.target)
         elif args.command == "whois":
+            report.log_command(f"whois {args.domain}")
             whois_lookup.whois_lookup(args.domain)
+        elif args.command == "report":
+            report.create_auto_report()
+        elif args.command == "x-mask":
+            if args.revert:
+                fingerprint_hider.revert_mask()
+            elif args.profile:
+                fingerprint_hider.apply_mask(args.profile)
+            else:
+                print("[bold red]❗ Укажите --profile или --revert[/bold red]")
         else:
             parser.print_help()
     except Exception as e:

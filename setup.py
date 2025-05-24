@@ -15,7 +15,7 @@ setup(
             'sysfox=main:main'
         ]
     },
-    author="Your Name",
+    author="casssuzy",
     description="SysFox - Powerful Network Toolkit",
     keywords="network security tools cli sysadmin",
 )

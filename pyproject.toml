@@ -3,7 +3,7 @@ name = "sysfox"
 version = "0.1.0"
 description = "SysFox: Powerful CLI toolkit"
 authors = [
-  { name="Your Name", email="you@example.com" }
+  { name="casssuzy", email="mkuzgov14@gmail.com" }
 ]
 dependencies = [
   "requests",
