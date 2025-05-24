@@ -1,10 +1,15 @@
-
-### main.py
+# main.py
 import argparse
-from modules.network import (
+import sys
+import traceback
+from sysfox.core import error_handler
+from sysfox.core.logger import setup_logger
+from sysfox.modules.network import (
     dns_lookup, geolocation, interface, ipinfo, live_hosts,
     mac_lookup, ping, scan, traceroute, whois_lookup
 )
+
+logger = setup_logger()
 
 def main():
     parser = argparse.ArgumentParser(description="SysFox Network Toolkit")
@@ -43,25 +48,34 @@ def main():
 
     args = parser.parse_args()
 
-    if args.command == "dns":
-        dns_lookup.dns_lookup(args.domain)
-    elif args.command == "geo":
-        geolocation.get_ip_info(args.ip)
-    elif args.command == "ifaces":
-        interface.show_interfaces()
-    elif args.command == "ipinfo":
-        ipinfo.get_ip_info(args.domain)
-    elif args.command == "live":
-        live_hosts.find_live_hosts(args.subnet)
-    elif args.command == "mac":
-        mac_lookup.mac_lookup(args.mac)
-    elif args.command == "ping":
-        ping.ping_host(args.target, args.count)
-    elif args.command == "scan":
-        scan.port_scan(args.host, args.ports)
-    elif args.command == "trace":
-        traceroute.traceroute(args.target)
-    elif args.command == "whois":
-        whois_lookup.whois_lookup(args.domain)
-    else:
-        parser.print_help()
+    logger.info(f"Команда получена: {args.command}")
+    try:
+        if args.command == "dns":
+            dns_lookup.dns_lookup(args.domain)
+        elif args.command == "geo":
+            geolocation.get_ip_info(args.ip)
+        elif args.command == "ifaces":
+            interface.show_interfaces()
+        elif args.command == "ipinfo":
+            ipinfo.get_ip_info(args.domain)
+        elif args.command == "live":
+            live_hosts.find_live_hosts(args.subnet)
+        elif args.command == "mac":
+            mac_lookup.mac_lookup(args.mac)
+        elif args.command == "ping":
+            ping.ping_host(args.target, args.count)
+        elif args.command == "scan":
+            scan.port_scan(args.host, args.ports)
+        elif args.command == "trace":
+            traceroute.traceroute(args.target)
+        elif args.command == "whois":
+            whois_lookup.whois_lookup(args.domain)
+        else:
+            parser.print_help()
+    except Exception as e:
+        logger.error(f"[!] Глобальная ошибка: {e}")
+        logger.debug(traceback.format_exc())
+        sys.exit(1)
+
+if __name__ == "__main__":
+    main()
