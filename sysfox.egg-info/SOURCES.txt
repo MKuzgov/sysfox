@@ -10,6 +10,8 @@ sysfox.egg-info/entry_points.txt
 sysfox.egg-info/requires.txt
 sysfox.egg-info/top_level.txt
 sysfox/core/__init__.py
+sysfox/core/decorators.py
+sysfox/core/error_handler.py
 sysfox/core/logger.py
 sysfox/modules/__init__.py
 sysfox/modules/network/__init__.py

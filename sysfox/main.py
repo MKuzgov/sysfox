@@ -1,7 +1,9 @@
-# main.py
+import argparse
+import os
 import argparse
 import sys
 import traceback
+import os
 from sysfox.core import error_handler
 from sysfox.core.logger import setup_logger
 from sysfox.modules.network import (
@@ -9,10 +11,19 @@ from sysfox.modules.network import (
     mac_lookup, ping, scan, traceroute, whois_lookup, report
 )
 from sysfox.modules.advanced import fingerprint_hider
+from sysfox.modules.advanced.ndp_detector import start_ndp_scan
 
 logger = setup_logger()
 
+def ensure_root_for(commands):
+    if len(sys.argv) > 1 and sys.argv[1] in commands:
+        if os.geteuid() != 0:
+            print("[bold red]🔐 Требуется root-доступ. Повторный запуск с sudo...[/bold red]")
+            os.execvp("sudo", ["sudo", sys.executable] + sys.argv)
+
 def main():
+    ensure_root_for(["x-mask", "x-ndp"])
+
     parser = argparse.ArgumentParser(description="SysFox Network Toolkit")
     subparsers = parser.add_subparsers(dest="command")
 
@@ -50,6 +61,9 @@ def main():
     parser_mask = subparsers.add_parser("x-mask")
     parser_mask.add_argument("--profile", help="Маска для подмены fingerprint (например: win11)")
     parser_mask.add_argument("--revert", action="store_true", help="Сброс маскировки")
+
+    parser_ndp = subparsers.add_parser("x-ndp")
+    parser_ndp.add_argument("--timeout", type=int, default=60)
 
     parser_report = subparsers.add_parser("report")
 
@@ -96,8 +110,11 @@ def main():
                 fingerprint_hider.apply_mask(args.profile)
             else:
                 print("[bold red]❗ Укажите --profile или --revert[/bold red]")
+        elif args.command == "x-ndp":
+            start_ndp_scan(args.timeout)
         else:
             parser.print_help()
+
     except Exception as e:
         logger.error(f"[!] Глобальная ошибка: {e}")
         logger.debug(traceback.format_exc())

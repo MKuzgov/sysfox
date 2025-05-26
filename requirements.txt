@@ -2,3 +2,4 @@ rich
 requests
 psutil
 python-whois
+scapy

@@ -2,20 +2,18 @@ from setuptools import setup, find_packages
 
 setup(
     name="sysfox",
-    version="0.1",
+    version="0.1.0",
     packages=find_packages(),
     install_requires=[
         "rich",
         "requests",
         "psutil",
-        "python-whois"
+        "whois",
+        "scapy",
     ],
     entry_points={
-        'console_scripts': [
-            'sysfox=main:main'
-        ]
+        "console_scripts": [
+            "sysfox = sysfox.main:main",
+        ],
     },
-    author="casssuzy",
-    description="SysFox - Powerful Network Toolkit",
-    keywords="network security tools cli sysadmin",
 )

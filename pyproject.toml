@@ -1,21 +1,21 @@
 [project]
 name = "sysfox"
 version = "0.1.0"
-description = "SysFox: Powerful CLI toolkit"
-authors = [
-  { name="casssuzy", email="mkuzgov14@gmail.com" }
-]
+description = "Ultimate toolkit for sysadmins, netsec and DevOps"
+authors = [{ name = "Your Name", email = "your@email.com" }]
 dependencies = [
-  "requests",
   "rich",
+  "requests",
   "psutil",
+  "scapy",
   "whois",
-  "python-whois"
+  "matplotlib"
 ]
+requires-python = ">=3.8"
 
 [project.scripts]
 sysfox = "sysfox.main:main"
 
 [build-system]
-requires = ["setuptools>=61.0"]
+requires = ["setuptools", "wheel"]
 build-backend = "setuptools.build_meta"

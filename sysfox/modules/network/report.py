@@ -1,4 +1,3 @@
-# report.py
 from datetime import datetime
 import os
 import subprocess

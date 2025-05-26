@@ -1,12 +1,12 @@
 Metadata-Version: 2.4
 Name: sysfox
 Version: 0.1.0
-Summary: SysFox: Powerful CLI toolkit
-Author: Your Name
-Author-email: Your Name <you@example.com>
-Requires-Dist: requests
+Summary: Ultimate toolkit for sysadmins, netsec and DevOps
+Author-email: Your Name <your@email.com>
+Requires-Python: >=3.8
 Requires-Dist: rich
+Requires-Dist: requests
 Requires-Dist: psutil
+Requires-Dist: scapy
 Requires-Dist: whois
-Requires-Dist: python-whois
-Dynamic: author
+Requires-Dist: matplotlib

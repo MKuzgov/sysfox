@@ -1,5 +1,6 @@
-requests
 rich
+requests
 psutil
+scapy
 whois
-python-whois
+matplotlib
